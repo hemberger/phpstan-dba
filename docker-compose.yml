@@ -1,0 +1,36 @@
+x-test: &test
+    build:
+        context: .
+    image: local/phpstan-dba
+    pull_policy: never
+    volumes:
+        - ./src:/work/src:ro
+        - ./tests:/work/tests:ro
+        - ./config:/work/config:ro
+        - ./.env:/work/.env:ro
+        - ./phpstan.neon.dist:/work/phpstan.neon.dist:ro
+        - ./phpstan-baseline.neon:/work/phpstan-baseline.neon:ro
+        - ./bootstrap.php:/work/bootstrap.php:ro
+    environment:
+        DBA_HOST: mysql
+    depends_on:
+        - mysql
+
+services:
+    phpunit:
+        <<: *test
+        entrypoint: vendor/bin/phpunit
+
+    phpstan:
+        <<: *test
+        entrypoint: vendor/bin/phpstan --memory-limit=4G --debug analyse
+
+    mysql:
+        image: mysql:8.0
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: ${DBA_USER}
+            MYSQL_PASSWORD: ${DBA_PASSWORD}
+            MYSQL_DATABASE: ${DBA_DATABASE}
+        volumes:
+            - ./tests/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
