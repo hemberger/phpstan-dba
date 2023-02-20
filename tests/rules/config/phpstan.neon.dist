@@ -1,6 +1,7 @@
 includes:
     - ../../../config/stubFiles.neon
     - ../../../config/extensions.neon
+    - ../../fixtures.neon
 
 parameters:
     level: max

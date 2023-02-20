@@ -22,6 +22,7 @@ class SyntaxErrorInQueryAssemblerRuleTest extends RuleTestCase
     {
         return [
             __DIR__ . '/../../config/dba.neon',
+            __DIR__ . '/../fixtures.neon',
         ];
     }
 
